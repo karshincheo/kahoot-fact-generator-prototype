@@ -15,7 +15,6 @@ type PlayerFormProps = {
   error: string | null;
 };
 
-const FACT_LIMIT = 60;
 const NAME_LIMIT = 60;
 
 export function PlayerForm({ isSubmitting, onSubmit, error }: PlayerFormProps) {
@@ -58,18 +57,6 @@ export function PlayerForm({ isSubmitting, onSubmit, error }: PlayerFormProps) {
       <p className="mt-2 text-indigo-900">
         Keep each fact short and punchy. The host will generate the Kahoot file in one click.
       </p>
-      <div className="mt-4 rounded-2xl border-2 border-indigo-200 bg-indigo-50 p-4">
-        <p className="text-xs font-black uppercase tracking-[0.12em] text-indigo-700">
-          Quick tips
-        </p>
-        <ul className="mt-2 grid gap-1 text-sm font-semibold text-indigo-800 sm:grid-cols-2">
-          <li>Use specific details for fun guesses.</li>
-          <li>Facts are capped at 60 characters each.</li>
-          <li>One statement should be believable but false.</li>
-          <li>Do not include sensitive personal info.</li>
-        </ul>
-      </div>
-
       <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
         <div className="space-y-2">
           <label
@@ -143,27 +130,17 @@ type FactInputProps = {
 };
 
 function FactInput({ id, label, value, onChange, placeholder }: FactInputProps) {
-  const remaining = FACT_LIMIT - value.length;
-
   return (
     <div className="space-y-2 rounded-2xl bg-indigo-50 p-4">
-      <div className="flex items-center justify-between">
-        <label
-          className="block text-xs font-black uppercase tracking-[0.12em] text-indigo-800"
-          htmlFor={id}
-        >
-          {label}
-        </label>
-        <span
-          className={`text-sm font-black ${remaining <= 10 ? "text-rose-600" : "text-indigo-700"}`}
-        >
-          {value.length}/{FACT_LIMIT}
-        </span>
-      </div>
+      <label
+        className="block text-xs font-black uppercase tracking-[0.12em] text-indigo-800"
+        htmlFor={id}
+      >
+        {label}
+      </label>
       <textarea
         id={id}
         name={id}
-        maxLength={FACT_LIMIT}
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
@@ -171,12 +148,6 @@ function FactInput({ id, label, value, onChange, placeholder }: FactInputProps) 
         className="w-full resize-none rounded-xl border-4 border-indigo-200 bg-white px-4 py-3 text-indigo-950 outline-none ring-0 transition-all focus:-translate-y-px focus:border-indigo-500 focus:shadow-[0_8px_0_0_rgba(99,102,241,0.25)]"
         required
       />
-      <div className="h-2 overflow-hidden rounded-full bg-indigo-100">
-        <div
-          className="h-full rounded-full bg-indigo-500 transition-all"
-          style={{ width: `${(value.length / FACT_LIMIT) * 100}%` }}
-        />
-      </div>
     </div>
   );
 }

@@ -19,7 +19,8 @@ export function generateKahootRows(players: PlayerRow[]): KahootQuestionRow[] {
   }
 
   const allNames = players.map((player) => player.name);
-  const rows: KahootQuestionRow[] = [];
+  const whoSaidRows: KahootQuestionRow[] = [];
+  const trueFalseRows: KahootQuestionRow[] = [];
 
   for (const player of players) {
     const decoyPool = [...new Set(allNames.filter((name) => name !== player.name))];
@@ -31,7 +32,7 @@ export function generateKahootRows(players: PlayerRow[]): KahootQuestionRow[] {
     const answerChoices = shuffle([player.name, ...decoys]);
     const correctIndex = (answerChoices.indexOf(player.name) + 1) as 1 | 2 | 3 | 4;
 
-    rows.push({
+    whoSaidRows.push({
       question: `Who said: ${player.true_fact_1}`,
       answer1: answerChoices[0],
       answer2: answerChoices[1],
@@ -44,8 +45,8 @@ export function generateKahootRows(players: PlayerRow[]): KahootQuestionRow[] {
     const useTrueFact = Math.random() < 0.5;
     const selectedFact = useTrueFact ? player.true_fact_2 : player.false_fact_1;
 
-    rows.push({
-      question: `True or False: ${player.name} ${selectedFact}`,
+    trueFalseRows.push({
+      question: `True or False: ${player.name} - ${selectedFact}`,
       answer1: "True",
       answer2: "False",
       answer3: "",
@@ -55,5 +56,18 @@ export function generateKahootRows(players: PlayerRow[]): KahootQuestionRow[] {
     });
   }
 
-  return shuffle(rows);
+  const shuffledWhoSaid = shuffle(whoSaidRows);
+  const shuffledTrueFalse = shuffle(trueFalseRows);
+  const startWithTrueFalse = Math.random() < 0.5;
+  const alternatingRows: KahootQuestionRow[] = [];
+
+  for (let i = 0; i < players.length; i += 1) {
+    if (startWithTrueFalse) {
+      alternatingRows.push(shuffledTrueFalse[i], shuffledWhoSaid[i]);
+    } else {
+      alternatingRows.push(shuffledWhoSaid[i], shuffledTrueFalse[i]);
+    }
+  }
+
+  return alternatingRows;
 }
